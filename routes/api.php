@@ -20,4 +20,7 @@ Route::group(['prefix'=> 'kioson'], function(){
    Route::post('kelurahan','ApiController@getKelurahan');
    Route::post('kios','ApiController@getKios');
    Route::post('investor','ApiController@getSaham');
+
+   Route::post('addEmail','ApiController@addEmail');
+   Route::post('addPhone','ApiController@addPhone');
 });

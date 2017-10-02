@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\user_email;
+use App\user_phone;
 
 class ApiController extends Controller
 {
@@ -120,5 +123,50 @@ class ApiController extends Controller
         
         // return $span->nodeValue;      
         
+    }
+
+    function addEmail(Request $request){
+        DB::beginTransaction();
+
+        try{
+            $this->validate($request, [
+                'name' => 'required',
+                'email'=> 'email|required'
+            ]);
+            $name = $request->input('name');
+            $email = $request->input('email');
+
+            $newUserEmail = new user_email;
+            $newUserEmail->name = $name;
+            $newUserEmail->email = $email;
+            $newUserEmail->save(); 
+            
+            DB::commit();
+            return response()->json(["message"=>"Add new user email success"]);
+        }catch(\Exception $e){
+            DB::rollback();
+            return response()->json(["message"=>$e->getMessage()],500);
+        }
+    }
+
+    function addPhone(Request $request){
+        DB::beginTransaction();
+
+        try{
+            $this->validate($request, [
+                'phone_number' => 'required|numeric'
+            ]);
+            $phone = $request->input('phone_number');
+
+            $newUserPhone = new user_phone;
+            $newUserPhone->phone_number = $phone;
+            $newUserPhone->save(); 
+
+            DB::commit();
+            return response()->json(["message"=>"Add new user phone success"]);
+        }catch(\Exception $e){
+            DB::rollback();
+            return response()->json(["message"=>$e->getMessage()],500);
+        }
     }
 }
